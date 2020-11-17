@@ -1,0 +1,79 @@
+server:
+  port: 9108
+  servlet:
+    context-path: /v2/management
+logging:
+  path: /app/logs/management
+
+spring:
+  profiles:
+    active: test
+  servlet:
+    multipart:
+      maxFileSize: -1
+      maxRequestSize: -1
+  devtools:
+    restart:
+      enabled: true
+  application:
+    name: development-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+      filters: stat,wall,log4j
+      initial-size: 5
+      max-active: 20
+      max-pool-prepared-statement-per-connection-size: 20
+      max-wait: 60000
+      min-evictable-idle-time-millis: 300000
+      min-idle: 5
+      pool-prepared-statements: true
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      use-global-data-source-stat: true
+      validation-query: SELECT 1 FROM DUAL
+
+  redis:
+    port: 6379
+    timeout: 2000 # ���ӳ�ʱʱ�䣨���룩
+    jedis:
+      pool:
+        max-active: 200 # ���ӳ������������ʹ�ø�ֵ��ʾû�����ƣ�
+        max-wait: -1  # ���ӳ���������ȴ�ʱ�䣨ʹ�ø�ֵ��ʾû�����ƣ�
+        max-idle: 10  # ���ӳ��е�����������
+        min-idle: 0   # ���ӳ��е���С��������
+
+mybatis-plus:
+  configuration:
+    mapUnderscoreToCamelCase: true
+  global-config:
+    db-config:
+      logic-delete-value: 1 # �߼���ɾ��ֵ(Ĭ��Ϊ 1)
+      logic-not-delete-value: 0 # �߼�δɾ��ֵ(Ĭ��Ϊ 0)
+      field-strategy: not_empty
+  # ֧��ͳ��� * ���� ; �ָ�
+  typeEnumsPackage: cn.com.partical.development.developmentservice
+  mapper-locations: classpath*:mybatis/**/*.xml
+  type-aliases-package: cn.com.partical.development.developmentservice
+
+swagger:
+  # ����
+  title: �з�ϵͳ
+  contact:
+    name: intelligence
+    email: intelligence@126.com
+    url: https://intelligence/
+  version: 1.0.0
+  description: �з�ϵͳ
+  termsOfServiceUrl: https://www.partical.com.cn
+  # swaggerɨ��Ļ�������Ĭ�ϣ�ȫɨ��
+  base-package: cn.com.partical.development.system.developmentservice
+  # ��Ҫ����Ļ���URL����Ĭ�ϣ�/**
+  base-path: /**
+  # ��Ҫ�ų���URL����Ĭ�ϣ���
+  exclude-path: ""
+
+

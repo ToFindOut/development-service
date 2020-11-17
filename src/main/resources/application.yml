@@ -1,0 +1,79 @@
+server:
+  port: 9108
+  servlet:
+    context-path: /v2/management
+logging:
+  path: /app/logs/management
+
+spring:
+  profiles:
+    active: test
+  servlet:
+    multipart:
+      maxFileSize: -1
+      maxRequestSize: -1
+  devtools:
+    restart:
+      enabled: true
+  application:
+    name: development-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+      filters: stat,wall,log4j
+      initial-size: 5
+      max-active: 20
+      max-pool-prepared-statement-per-connection-size: 20
+      max-wait: 60000
+      min-evictable-idle-time-millis: 300000
+      min-idle: 5
+      pool-prepared-statements: true
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      use-global-data-source-stat: true
+      validation-query: SELECT 1 FROM DUAL
+
+  redis:
+    port: 6379
+    timeout: 2000 # 连接超时时间（毫秒）
+    jedis:
+      pool:
+        max-active: 200 # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1  # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10  # 连接池中的最大空闲连接
+        min-idle: 0   # 连接池中的最小空闲连接
+
+mybatis-plus:
+  configuration:
+    mapUnderscoreToCamelCase: true
+  global-config:
+    db-config:
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+      field-strategy: not_empty
+  # 支持统配符 * 或者 ; 分割
+  typeEnumsPackage: cn.com.partical.development.developmentservice
+  mapper-locations: classpath*:mybatis/**/*.xml
+  type-aliases-package: cn.com.partical.development.developmentservice
+
+swagger:
+  # 标题
+  title: 研发系统
+  contact:
+    name: intelligence
+    email: intelligence@126.com
+    url: https://intelligence/
+  version: 1.0.0
+  description: 研发系统
+  termsOfServiceUrl: https://www.partical.com.cn
+  # swagger扫描的基础包，默认：全扫描
+  base-package: cn.com.partical.development.system.developmentservice
+  # 需要处理的基础URL规则，默认：/**
+  base-path: /**
+  # 需要排除的URL规则，默认：空
+  exclude-path: ""
+
+
