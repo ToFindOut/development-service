@@ -13,14 +13,11 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 public class UserInfo extends BasicsEntity {
 
-  // 用户名
-  private String realName;
-
   // 用户昵称
   private String userNickName;
 
   // 手机号
-  private long phone;
+  private String phone;
 
   // 密码
   private String pwd;
