@@ -20,8 +20,11 @@ public class UserBackPwdDTO implements Serializable {
     @ApiModelProperty(value = "手机号")
     private String phone;
 
-    @ApiModelProperty(value = "密码")
-    private String pwd;
+    @ApiModelProperty(value = "新密码")
+    private String newPwd;
+
+    @ApiModelProperty(value = "确认密码")
+    private String reNewPwd;
 
     @ApiModelProperty(value = "验证码")
     private String code;

@@ -26,13 +26,6 @@ public interface IUserService {
     UserBaseInfoDTO findUserBaseInfoByPhone(String phone);
 
     /**
-     * 统计手机号是否存在
-     * @param phone 手机号
-     * @return 状态
-     */
-    boolean countUserPhoneExists(String phone);
-
-    /**
      * 注册用户信息
      * @param userInfo 用户信息
      * @return 状态
@@ -54,4 +47,26 @@ public interface IUserService {
      * @return 状态
      */
     boolean updateUserPwd(long userId, String pwd);
+
+    /**
+     * 查询用户ID
+     * @param phone 手机号
+     * @return 用户Id
+     */
+    long findUserIdByPhone(String phone);
+
+    /**
+     * 检查手机号是否被使用
+     * @param phone 手机号
+     * @param userId 用户Id
+     * @return 状态
+     */
+    boolean checkPhoneWhetherOrNotUsed(String phone, Long userId);
+
+    /**
+     * 修改用户信息
+     * @param userInfo 用户信息
+     * @return 状态
+     */
+    boolean updateUserInfo(UserInfo userInfo);
 }

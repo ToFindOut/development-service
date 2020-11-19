@@ -5,14 +5,12 @@ import cn.com.partical.development.system.developmentservice.dto.user.UserLoginD
 import cn.com.partical.development.system.developmentservice.entity.UserInfo;
 import cn.com.partical.development.system.developmentservice.mapper.IUserMapper;
 import cn.com.partical.development.system.developmentservice.service.user.IUserService;
-import cn.hutool.core.bean.BeanInfoCache;
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.DynaBean;
 import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author 旺仔
@@ -48,13 +46,6 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public boolean countUserPhoneExists(String phone) {
-        QueryWrapper<UserInfo> userInfoQueryWrapper = new QueryWrapper<>();
-        userInfoQueryWrapper.eq("phone", phone);
-        return userMapper.selectCount(userInfoQueryWrapper) > 0;
-    }
-
-    @Override
     public boolean registerUserInfo(UserInfo userInfo) {
         return userMapper.insert(userInfo) > 0;
     }
@@ -74,6 +65,32 @@ public class UserServiceImpl implements IUserService {
         userInfo.setId(userId);
         userInfo.setPwd(SecureUtil.md5(pwd));
 
+        return userMapper.updateById(userInfo) > 0;
+    }
+
+    @Override
+    public long findUserIdByPhone(String phone) {
+        QueryWrapper<UserInfo> userInfoQueryWrapper = new QueryWrapper<>();
+        userInfoQueryWrapper.eq("phone", phone);
+
+        return userMapper.selectOne(userInfoQueryWrapper).getId();
+    }
+
+    @Override
+    public boolean checkPhoneWhetherOrNotUsed(String phone, Long userId) {
+        QueryWrapper<UserInfo> userInfoQueryWrapper = new QueryWrapper<>();
+        userInfoQueryWrapper.eq("phone", phone);
+
+        // 如果用户Id不为空则排除本身
+        if(userId != null) {
+            userInfoQueryWrapper.ne("id", userId);
+        }
+
+        return userMapper.selectCount(userInfoQueryWrapper) > 0;
+    }
+
+    @Override
+    public boolean updateUserInfo(UserInfo userInfo) {
         return userMapper.updateById(userInfo) > 0;
     }
 }

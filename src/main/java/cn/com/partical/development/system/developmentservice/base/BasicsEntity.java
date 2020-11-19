@@ -26,8 +26,8 @@ public class BasicsEntity implements Serializable {
     /**
      * 应用ID
      */
-    @TableField(value = "app_id",fill = FieldFill.INSERT)
-    private Long appId;
+    @TableField(value = "app_id")
+    private Integer appId;
 
     /**
      * 创建时间
@@ -46,10 +46,10 @@ public class BasicsEntity implements Serializable {
     /**
      * 数据状态
      */
-    @TableField(value = "active_flag", fill = FieldFill.INSERT)
+    @TableField(value = "active_flag")
     private Short activeFlag;
 
-    @TableField(value = "version", fill = FieldFill.INSERT)
+    @TableField(value = "version")
     @Version
     private Long version;
 

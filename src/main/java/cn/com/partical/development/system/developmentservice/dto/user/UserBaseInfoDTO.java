@@ -38,7 +38,7 @@ public class UserBaseInfoDTO implements Serializable {
     private String avatarUrl;
 
     @ApiModelProperty(value = "性别 0：未知，1：男，2：女")
-    private byte gender;
+    private Byte gender;
 
     @ApiModelProperty(value = "城市")
     private String city;
@@ -55,4 +55,6 @@ public class UserBaseInfoDTO implements Serializable {
 
     @ApiModelProperty(value = "身份证")
     private String identityCard;
+
+    private String code;
 }
