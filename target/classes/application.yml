@@ -38,42 +38,42 @@ spring:
 
   redis:
     port: 6379
-    timeout: 2000 # ï¿½ï¿½ï¿½Ó³ï¿½Ê±Ê±ï¿½ä£¨ï¿½ï¿½ï¿½ë£©
+    timeout: 2000 # Á¬½Ó³¬Ê±Ê±¼ä£¨ºÁÃë£©
     jedis:
       pool:
-        max-active: 200 # ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¸ï¿½Öµï¿½ï¿½Ê¾Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½
-        max-wait: -1  # ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½Ê±ï¿½ä£¨Ê¹ï¿½Ã¸ï¿½Öµï¿½ï¿½Ê¾Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½
-        max-idle: 10  # ï¿½ï¿½ï¿½Ó³ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-        min-idle: 0   # ï¿½ï¿½ï¿½Ó³ï¿½ï¿½Ðµï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        max-active: 200 # Á¬½Ó³Ø×î´óÁ¬½ÓÊý£¨Ê¹ÓÃ¸ºÖµ±íÊ¾Ã»ÓÐÏÞÖÆ£©
+        max-wait: -1  # Á¬½Ó³Ø×î´ó×èÈûµÈ´ýÊ±¼ä£¨Ê¹ÓÃ¸ºÖµ±íÊ¾Ã»ÓÐÏÞÖÆ£©
+        max-idle: 10  # Á¬½Ó³ØÖÐµÄ×î´ó¿ÕÏÐÁ¬½Ó
+        min-idle: 0   # Á¬½Ó³ØÖÐµÄ×îÐ¡¿ÕÏÐÁ¬½Ó
 
 mybatis-plus:
   configuration:
     mapUnderscoreToCamelCase: true
   global-config:
     db-config:
-      logic-delete-value: 1 # ï¿½ß¼ï¿½ï¿½ï¿½É¾ï¿½ï¿½Öµ(Ä¬ï¿½ï¿½Îª 1)
-      logic-not-delete-value: 0 # ï¿½ß¼ï¿½Î´É¾ï¿½ï¿½Öµ(Ä¬ï¿½ï¿½Îª 0)
+      logic-delete-value: 1 # Âß¼­ÒÑÉ¾³ýÖµ(Ä¬ÈÏÎª 1)
+      logic-not-delete-value: 0 # Âß¼­Î´É¾³ýÖµ(Ä¬ÈÏÎª 0)
       field-strategy: not_empty
-  # Ö§ï¿½ï¿½Í³ï¿½ï¿½ï¿½ * ï¿½ï¿½ï¿½ï¿½ ; ï¿½Ö¸ï¿½
+  # Ö§³ÖÍ³Åä·û * »òÕß ; ·Ö¸î
   typeEnumsPackage: cn.com.partical.development.developmentservice
   mapper-locations: classpath*:mybatis/**/*.xml
   type-aliases-package: cn.com.partical.development.developmentservice
 
 swagger:
-  # ï¿½ï¿½ï¿½ï¿½
-  title: ï¿½Ð·ï¿½ÏµÍ³
+  # ±êÌâ
+  title: ÑÐ·¢ÏµÍ³
   contact:
     name: intelligence
     email: intelligence@126.com
     url: https://intelligence/
   version: 1.0.0
-  description: ï¿½Ð·ï¿½ÏµÍ³
+  description: ÑÐ·¢ÏµÍ³
   termsOfServiceUrl: https://www.partical.com.cn
-  # swaggerÉ¨ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï£ï¿½È«É¨ï¿½ï¿½
+  # swaggerÉ¨ÃèµÄ»ù´¡°ü£¬Ä¬ÈÏ£ºÈ«É¨Ãè
   base-package: cn.com.partical.development.system.developmentservice
-  # ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½URLï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï£ï¿½/**
+  # ÐèÒª´¦ÀíµÄ»ù´¡URL¹æÔò£¬Ä¬ÈÏ£º/**
   base-path: /**
-  # ï¿½ï¿½Òªï¿½Å³ï¿½ï¿½ï¿½URLï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï£ï¿½ï¿½ï¿½
+  # ÐèÒªÅÅ³ýµÄURL¹æÔò£¬Ä¬ÈÏ£º¿Õ
   exclude-path: ""
 
 
