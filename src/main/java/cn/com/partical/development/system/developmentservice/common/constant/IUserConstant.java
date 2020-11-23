@@ -1,6 +1,6 @@
 package cn.com.partical.development.system.developmentservice.common.constant;
 
-public interface UserConstant {
+public interface IUserConstant {
 
     /************************ Redis key 前缀 *****************************/
     // 登录token前缀
@@ -49,15 +49,7 @@ public interface UserConstant {
 
 
 
-    /**
-     * 模糊符号
-     */
-    String FUZZY_SYMBOL = "*";
 
-    /**
-     * 下划线
-     */
-    String UNDERLINE = "_";
 
     /**
      * 密码长度

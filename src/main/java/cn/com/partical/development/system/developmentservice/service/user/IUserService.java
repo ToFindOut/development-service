@@ -2,6 +2,8 @@ package cn.com.partical.development.system.developmentservice.service.user;
 
 import cn.com.partical.development.system.developmentservice.dto.user.UserBaseInfoDTO;
 import cn.com.partical.development.system.developmentservice.dto.user.UserLoginDTO;
+import cn.com.partical.development.system.developmentservice.dto.user.UserSearchBaseDTO;
+import cn.com.partical.development.system.developmentservice.dto.user.UserSearchDTO;
 import cn.com.partical.development.system.developmentservice.entity.UserInfo;
 
 /**
@@ -69,4 +71,11 @@ public interface IUserService {
      * @return 状态
      */
     boolean updateUserInfo(UserInfo userInfo);
+
+    /**
+     * 搜索用户信息
+     * @param userSearchDTO 用户搜索信息
+     * @return 参数
+     */
+    UserSearchBaseDTO searchUserInfo(UserSearchDTO userSearchDTO);
 }

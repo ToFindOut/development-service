@@ -39,8 +39,14 @@ public class SysFileController {
         //通过构造方法创建writer
         //ExcelWriter writer = new ExcelWriter("d:/writeTest.xls");
 
+        //自定义标题别名
+        writer.addHeaderAlias("name", "姓名");
+        writer.addHeaderAlias("name", "年龄");
+        writer.addHeaderAlias("name", "分数");
+        writer.addHeaderAlias("name", "是否通过");
+
         //跳过当前行，既第一行，非必须，在此演示用
-        writer.passCurrentRow();
+//        writer.passCurrentRow();
 
         //合并单元格后的标题行，使用默认标题样式
         writer.merge(row1.size() - 1, "测试标题");

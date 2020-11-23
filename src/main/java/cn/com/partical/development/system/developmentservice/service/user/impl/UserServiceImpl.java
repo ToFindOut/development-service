@@ -2,15 +2,16 @@ package cn.com.partical.development.system.developmentservice.service.user.impl;
 
 import cn.com.partical.development.system.developmentservice.dto.user.UserBaseInfoDTO;
 import cn.com.partical.development.system.developmentservice.dto.user.UserLoginDTO;
+import cn.com.partical.development.system.developmentservice.dto.user.UserSearchBaseDTO;
+import cn.com.partical.development.system.developmentservice.dto.user.UserSearchDTO;
 import cn.com.partical.development.system.developmentservice.entity.UserInfo;
-import cn.com.partical.development.system.developmentservice.mapper.IUserMapper;
+import cn.com.partical.development.system.developmentservice.mapper.user.IUserMapper;
 import cn.com.partical.development.system.developmentservice.service.user.IUserService;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author 旺仔
@@ -92,5 +93,19 @@ public class UserServiceImpl implements IUserService {
     @Override
     public boolean updateUserInfo(UserInfo userInfo) {
         return userMapper.updateById(userInfo) > 0;
+    }
+
+    @Override
+    public UserSearchBaseDTO searchUserInfo(UserSearchDTO userSearchDTO) {
+
+        UserSearchBaseDTO userSearchBaseDTO = new UserSearchBaseDTO();
+
+        QueryWrapper<UserInfo> userInfoQueryWrapper = new QueryWrapper<>();
+        userInfoQueryWrapper.eq("id", userSearchDTO.getId()).or().eq("phone", userSearchDTO.getPhone());
+
+        UserInfo userInfo = userMapper.selectOne(userInfoQueryWrapper);
+
+        BeanUtil.copyProperties(userInfo, userSearchBaseDTO);
+        return userSearchBaseDTO;
     }
 }

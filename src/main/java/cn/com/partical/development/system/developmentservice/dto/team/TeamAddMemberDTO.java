@@ -25,7 +25,7 @@ public class TeamAddMemberDTO {
     private Long teamId;
 
     @ApiModelProperty(value = "成员类型 0: 管理员，1 : 普通成员")
-    private Integer teamMemberType;
+    private Byte teamMemberType;
 
     @ApiModelProperty(value = "项目信息")
     private List<TeamProjectDTO> projectInfoList;

@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class TeamSettingDTO implements Serializable {
 
     @ApiModelProperty(value = "团队id")
-    private Long teamId;
+    private Long id;
 
     @ApiModelProperty(value = "团队名称")
     private String teamName;

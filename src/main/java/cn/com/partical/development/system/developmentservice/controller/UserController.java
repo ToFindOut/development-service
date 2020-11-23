@@ -1,7 +1,8 @@
 package cn.com.partical.development.system.developmentservice.controller;
 
 import cn.com.partical.development.system.developmentservice.base.BaseController;
-import cn.com.partical.development.system.developmentservice.common.constant.UserConstant;
+import cn.com.partical.development.system.developmentservice.common.constant.IParamConstant;
+import cn.com.partical.development.system.developmentservice.common.constant.IUserConstant;
 import cn.com.partical.development.system.developmentservice.common.global.GlobalApiResponse;
 import cn.com.partical.development.system.developmentservice.common.global.GlobalException;
 import cn.com.partical.development.system.developmentservice.dto.user.*;
@@ -58,7 +59,7 @@ public class UserController extends BaseController {
             // 通过手机号查询用户基本信息
             UserBaseInfoDTO userBaseInfo = userService.findUserBaseInfoByPhone(userLoginDTO.getPhone());
 
-            String token = UserConstant.LOGIN_TOKEN_PREFIX+userBaseInfo.getPhone()+UserConstant.UNDERLINE+IdUtil.simpleUUID();
+            String token = IUserConstant.LOGIN_TOKEN_PREFIX+userBaseInfo.getPhone()+IParamConstant.UNDERLINE+IdUtil.simpleUUID();
 
             Map<String,Object> build = MapUtil.newHashMap();
             build.put("token", token);
@@ -66,7 +67,7 @@ public class UserController extends BaseController {
 
 
             // 删除之前登录TOKEN
-            redisUtil.deleteByPrex(UserConstant.LOGIN_TOKEN_PREFIX+userBaseInfo.getPhone()+UserConstant.FUZZY_SYMBOL);
+            redisUtil.deleteByPrex(IUserConstant.LOGIN_TOKEN_PREFIX+userBaseInfo.getPhone()+IParamConstant.FUZZY_SYMBOL);
 
             // 封装token
             redisUtil.setValue(token, userBaseInfo.getId(), 86400*5);
@@ -91,18 +92,18 @@ public class UserController extends BaseController {
         boolean phoneFlag = userService.checkPhoneWhetherOrNotUsed(phone, userId);
 
         switch (type) {
-            case UserConstant.VERIFICATION_REGISTER_CODE :
+            case IUserConstant.VERIFICATION_REGISTER_CODE :
                 // 验证手机号是否存在
                 if (phoneFlag) {
                     return ResponseUtil.error(501, "手机号已存在");
                 }
                 break;
-            case UserConstant.VERIFICATION_RETRIEVE_PASSWORD_CODE :
+            case IUserConstant.VERIFICATION_RETRIEVE_PASSWORD_CODE :
                 if (!phoneFlag) {
                     return ResponseUtil.error(405, "手机号不存在");
                 }
                 break;
-            case UserConstant.UPDATE_PHONE_VERIFICATION_CODE :
+            case IUserConstant.UPDATE_PHONE_VERIFICATION_CODE :
                 if (userId == null) {
                     return ResponseUtil.error(401, "用户身份已过期");
                 }
@@ -125,17 +126,17 @@ public class UserController extends BaseController {
 
 
         switch (type) {
-            case UserConstant.VERIFICATION_REGISTER_CODE :
+            case IUserConstant.VERIFICATION_REGISTER_CODE :
                 // 注册
-                redisUtil.setValue(UserConstant.REGISTER_PHONE_VERIFICATION_PREFIX+phone, code, UserConstant.PHONE_VERIFICATION_EXPIRATION_TIME);
+                redisUtil.setValue(IUserConstant.REGISTER_PHONE_VERIFICATION_PREFIX+phone, code, IUserConstant.PHONE_VERIFICATION_EXPIRATION_TIME);
                 break;
-            case UserConstant.VERIFICATION_RETRIEVE_PASSWORD_CODE :
+            case IUserConstant.VERIFICATION_RETRIEVE_PASSWORD_CODE :
                 // 找回密码
-                redisUtil.setValue(UserConstant.RETRIEVE_PASSWORD_VERIFICATION_PREFIX+phone, code, UserConstant.PHONE_VERIFICATION_EXPIRATION_TIME);
+                redisUtil.setValue(IUserConstant.RETRIEVE_PASSWORD_VERIFICATION_PREFIX+phone, code, IUserConstant.PHONE_VERIFICATION_EXPIRATION_TIME);
                 break;
-            case UserConstant.UPDATE_PHONE_VERIFICATION_CODE :
+            case IUserConstant.UPDATE_PHONE_VERIFICATION_CODE :
                 // 修改手机号
-                redisUtil.setValue(UserConstant.UPDATE_PHONE_VERIFICATION_PREFIX+phone, code, UserConstant.PHONE_VERIFICATION_EXPIRATION_TIME);
+                redisUtil.setValue(IUserConstant.UPDATE_PHONE_VERIFICATION_PREFIX+phone, code, IUserConstant.PHONE_VERIFICATION_EXPIRATION_TIME);
                 break;
         }
 
@@ -156,19 +157,19 @@ public class UserController extends BaseController {
             return ResponseUtil.error(403, "手机号格式错误");
         }
 
-        if (userRegisterInfoDTO.getPwd().length() < UserConstant.PASSWORD_LENGTH) {
-            return ResponseUtil.error(405, "密码长度最小"+UserConstant.PASSWORD_LENGTH+"位");
+        if (userRegisterInfoDTO.getPwd().length() < IUserConstant.PASSWORD_LENGTH) {
+            return ResponseUtil.error(405, "密码长度最小"+IUserConstant.PASSWORD_LENGTH+"位");
         }
 
         if (userService.checkPhoneWhetherOrNotUsed(userRegisterInfoDTO.getPhone(), null)) {
             throw new GlobalException(501, "该手机号已存在");
         }
 
-        if (redisUtil.getValue(UserConstant.REGISTER_PHONE_VERIFICATION_PREFIX+userRegisterInfoDTO.getPhone()) == null) {
+        if (redisUtil.getValue(IUserConstant.REGISTER_PHONE_VERIFICATION_PREFIX+userRegisterInfoDTO.getPhone()) == null) {
             return ResponseUtil.error(403, "验证码已过期,请重新发送");
         }
 
-        if (!userRegisterInfoDTO.getCode().equals(redisUtil.getValue(UserConstant.REGISTER_PHONE_VERIFICATION_PREFIX+userRegisterInfoDTO.getPhone()))) {
+        if (!userRegisterInfoDTO.getCode().equals(redisUtil.getValue(IUserConstant.REGISTER_PHONE_VERIFICATION_PREFIX+userRegisterInfoDTO.getPhone()))) {
             return ResponseUtil.error(403, "验证码错误");
         }
 
@@ -198,8 +199,8 @@ public class UserController extends BaseController {
             return ResponseUtil.error(403, "参数不能为空");
         }
 
-        if (userChangePwdDTO.getNewPwd().length() < UserConstant.PASSWORD_LENGTH) {
-            return ResponseUtil.error(405, "密码长度最小"+UserConstant.PASSWORD_LENGTH+"位");
+        if (userChangePwdDTO.getNewPwd().length() < IUserConstant.PASSWORD_LENGTH) {
+            return ResponseUtil.error(405, "密码长度最小"+IUserConstant.PASSWORD_LENGTH+"位");
         }
 
         if (!userChangePwdDTO.getNewPwd().equals(userChangePwdDTO.getReNewPwd())) {
@@ -230,8 +231,8 @@ public class UserController extends BaseController {
             return ResponseUtil.error(403, "手机号格式错误");
         }
 
-        if (userBackPwdDTO.getNewPwd().length() < UserConstant.PASSWORD_LENGTH) {
-            return ResponseUtil.error(405, "密码长度最小"+UserConstant.PASSWORD_LENGTH+"位");
+        if (userBackPwdDTO.getNewPwd().length() < IUserConstant.PASSWORD_LENGTH) {
+            return ResponseUtil.error(405, "密码长度最小"+IUserConstant.PASSWORD_LENGTH+"位");
         }
 
         if (!userBackPwdDTO.getNewPwd().equals(userBackPwdDTO.getReNewPwd())) {
@@ -239,11 +240,11 @@ public class UserController extends BaseController {
         }
 
 
-        if (redisUtil.getValue(UserConstant.RETRIEVE_PASSWORD_VERIFICATION_PREFIX+userBackPwdDTO.getPhone()) == null) {
+        if (redisUtil.getValue(IUserConstant.RETRIEVE_PASSWORD_VERIFICATION_PREFIX+userBackPwdDTO.getPhone()) == null) {
             return ResponseUtil.error(403, "验证码已过期,请重新发送");
         }
 
-        if (!userBackPwdDTO.getCode().equals(redisUtil.getValue(UserConstant.RETRIEVE_PASSWORD_VERIFICATION_PREFIX+userBackPwdDTO.getPhone()))) {
+        if (!userBackPwdDTO.getCode().equals(redisUtil.getValue(IUserConstant.RETRIEVE_PASSWORD_VERIFICATION_PREFIX+userBackPwdDTO.getPhone()))) {
             return ResponseUtil.error(403, "验证码错误");
         }
 
@@ -281,19 +282,19 @@ public class UserController extends BaseController {
                 return ResponseUtil.error(406, "请输入验证码");
             }
 
-            if (redisUtil.getValue(UserConstant.UPDATE_PHONE_VERIFICATION_PREFIX+userBaseInfoDTO.getPhone()) == null) {
+            if (redisUtil.getValue(IUserConstant.UPDATE_PHONE_VERIFICATION_PREFIX+userBaseInfoDTO.getPhone()) == null) {
                 return ResponseUtil.error(403, "验证码已过期,请重新发送");
             }
 
-            if (!userBaseInfoDTO.getCode().equals(redisUtil.getValue(UserConstant.UPDATE_PHONE_VERIFICATION_PREFIX+userBaseInfoDTO.getPhone()))) {
+            if (!userBaseInfoDTO.getCode().equals(redisUtil.getValue(IUserConstant.UPDATE_PHONE_VERIFICATION_PREFIX+userBaseInfoDTO.getPhone()))) {
                 return ResponseUtil.error(403, "验证码错误");
             }
 
         }
 
         // 性别
-        if (userBaseInfoDTO.getGender() != null && userBaseInfoDTO.getGender() != UserConstant.GENDER_UNKNOWN
-                && userBaseInfoDTO.getGender() != UserConstant.GENDER_MAN && userBaseInfoDTO.getGender() != UserConstant.GENDER_WOMAN) {
+        if (userBaseInfoDTO.getGender() != null && userBaseInfoDTO.getGender() != IUserConstant.GENDER_UNKNOWN
+                && userBaseInfoDTO.getGender() != IUserConstant.GENDER_MAN && userBaseInfoDTO.getGender() != IUserConstant.GENDER_WOMAN) {
             return ResponseUtil.error(403, "参数类型错误");
         }
 
@@ -317,4 +318,22 @@ public class UserController extends BaseController {
         return ResponseUtil.error("修改失败");
     }
 
+
+    @ApiOperation(value = "搜索成员")
+    @RequestMapping(value = "/search/member", method = RequestMethod.POST)
+    public GlobalApiResponse<UserSearchBaseDTO> searchMember(HttpServletRequest request,
+                                                  @RequestBody UserSearchDTO userSearchDTO) {
+
+        Long userId = super.getUserId(request);
+
+        if (userId == null) {
+            return ResponseUtil.error(401, "用户身份已过期");
+        }
+
+        if (userSearchDTO == null) {
+            return ResponseUtil.error(403, "搜索参数不能为空");
+        }
+
+        return ResponseUtil.success(userService.searchUserInfo(userSearchDTO));
+    }
 }
