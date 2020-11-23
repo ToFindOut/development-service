@@ -26,13 +26,6 @@ public class TeamServiceImpl extends ServiceImpl<ITeamMapper,TeamInfo> implement
     @Autowired
     private ITeamMapper teamMapper;
 
-//    @Override
-//    public boolean updateTeamInfo(TeamSettingDTO teamSettingDTO) {
-//        TeamInfo teamInfo = new TeamInfo();
-//        BeanUtil.copyProperties(teamSettingDTO, teamInfo);
-//        return teamMapper.updateById(teamInfo) > 0;
-//    }
-
     @Override
     public IPage<TeamInfoDTO> searchListTeamInfo(String teamName, Long userId, int pageIndex, int pageSize) {
         Page<Object> page = new Page<>(pageIndex, pageSize);

@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 需求池表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class DemandPool extends BasicsEntity {

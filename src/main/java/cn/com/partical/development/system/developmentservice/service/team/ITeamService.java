@@ -20,13 +20,6 @@ import java.util.List;
 public interface ITeamService extends IService<TeamInfo> {
 
     /**
-     * 更新团队信息
-     * @param teamSettingDTO 团队信息
-     * @return 更新状态
-     */
-//    boolean updateTeamInfo(TeamSettingDTO teamSettingDTO);
-
-    /**
      * 搜索用户所在的团队
      * @param teamName 团队名称
      * @param userId 用户Id

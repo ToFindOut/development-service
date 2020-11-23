@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 项目配置表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ProjectSetting extends BasicsEntity {

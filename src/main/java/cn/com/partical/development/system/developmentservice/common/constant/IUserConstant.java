@@ -1,9 +1,10 @@
 package cn.com.partical.development.system.developmentservice.common.constant;
 
+@SuppressWarnings("ALL")
 public interface IUserConstant {
 
-    /************************ Redis key 前缀 *****************************/
-    // 登录token前缀
+    /************************ Redis key 前缀 登录token前缀*****************************/
+
     String LOGIN_TOKEN_PREFIX = "LOGIN_TOKEN_PREFIX_";
     /**
      * 注册手机验证码前缀
@@ -20,8 +21,7 @@ public interface IUserConstant {
 
 
 
-    /************************ 验证码 *****************************/
-    // 注册验证码状态
+    /************************ 验证码 注册验证码状态*****************************/
     int VERIFICATION_REGISTER_CODE = 1;
     /**
      * 找回密码验证码状态
@@ -35,8 +35,7 @@ public interface IUserConstant {
 
 
 
-    /************************ 性别 *****************************/
-    // 未知
+    /************************ 性别 未知*****************************/
     int GENDER_UNKNOWN = 0;
     /**
      * 男

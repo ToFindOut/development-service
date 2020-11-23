@@ -20,7 +20,7 @@ import java.util.Date;
 public class UserBaseInfoDTO implements Serializable {
 
     @ApiModelProperty(value = "用户ID")
-    private long id;
+    private Long id;
 
     @ApiModelProperty(value = "token")
     private String token;

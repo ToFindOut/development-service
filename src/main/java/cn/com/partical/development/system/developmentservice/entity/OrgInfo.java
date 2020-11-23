@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 企业信息表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class OrgInfo extends BasicsEntity {

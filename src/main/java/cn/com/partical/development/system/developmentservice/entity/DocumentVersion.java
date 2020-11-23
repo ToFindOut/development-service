@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 文档版本记录表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class DocumentVersion extends BasicsEntity {

@@ -21,6 +21,7 @@ public interface ITeamMapper extends BaseMapper<TeamInfo> {
      * 搜索团队信息
      * @param page 分页参数
      * @param teamName 团队名称
+     * @param userId 用户ID
      * @return 团队信息
      */
     @Select("SELECT\n" +

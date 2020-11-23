@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 用户操作记录表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class UserOperationLog extends BasicsEntity {

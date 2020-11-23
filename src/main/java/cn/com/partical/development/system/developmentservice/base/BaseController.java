@@ -1,6 +1,7 @@
 package cn.com.partical.development.system.developmentservice.base;
 
 
+import cn.com.partical.development.system.developmentservice.common.constant.IParamConstant;
 import cn.com.partical.development.system.developmentservice.util.cache.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ public class BaseController {
 
     protected Long getUserId(HttpServletRequest request) {
 
-        if (StringUtils.isBlank(request.getHeader("token")) || redisUtil.getValue(request.getHeader("token")) == null) {
+        if (StringUtils.isBlank(request.getHeader(IParamConstant.TOKEN)) || redisUtil.getValue(request.getHeader(IParamConstant.TOKEN)) == null) {
             return null;
         } else {
-            return Long.valueOf(redisUtil.getValue(request.getHeader("token")).toString());
+            return Long.valueOf(redisUtil.getValue(request.getHeader(IParamConstant.TOKEN)).toString());
     }
 
     }

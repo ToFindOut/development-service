@@ -38,7 +38,6 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public GlobalApiResponse<String> exceptionHandler(RuntimeException e) {
         log.info("###全局捕获异常2###,error:{}", e);
-//        globalExceptionSend.sendMail(e);
         return ResponseUtil.error("系统错误!");
     }
 
@@ -51,7 +50,6 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public GlobalApiResponse<String> exceptionHandler(Exception e) {
         log.info("###全局捕获异常3###,error:{}", e);
-//        globalExceptionSend.sendMail(e);
         return ResponseUtil.error("系统错误!");
     }
 }

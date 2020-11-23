@@ -118,7 +118,7 @@ public class UserController extends BaseController {
 
         String code;
         // 发送短信验证码开关 true 开启 false 关闭
-        if ("true".equals(SMS_SWITCH)) {
+        if (IParamConstant.SWITCH_STATE.equals(SMS_SWITCH)) {
             code = SendSmsVerificationCode.sendSmsVerificationCodeViaPhoneNumber(phone);
         } else {
             code = RandomStringUtils.randomNumeric(4);
@@ -138,6 +138,7 @@ public class UserController extends BaseController {
                 // 修改手机号
                 redisUtil.setValue(IUserConstant.UPDATE_PHONE_VERIFICATION_PREFIX+phone, code, IUserConstant.PHONE_VERIFICATION_EXPIRATION_TIME);
                 break;
+            default:
         }
 
 

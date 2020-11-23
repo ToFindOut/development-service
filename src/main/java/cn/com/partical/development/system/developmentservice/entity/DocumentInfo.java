@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 文档表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class DocumentInfo extends BasicsEntity {

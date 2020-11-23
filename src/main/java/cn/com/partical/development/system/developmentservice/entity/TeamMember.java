@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 团队成员表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class TeamMember extends BasicsEntity {

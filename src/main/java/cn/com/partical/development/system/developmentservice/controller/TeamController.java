@@ -128,7 +128,7 @@ public class TeamController extends BaseController {
         return ResponseUtil.error("添加失败");
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     boolean saveMemberInfo(TeamMember teamMember, List<ProjectMember> projectMemberList) {
         return teamMemberService.updateTeamMemberInfo(teamMember) && projectMemberService.saveProjectMemberInfo(projectMemberList);
     }
@@ -146,10 +146,12 @@ public class TeamController extends BaseController {
         }
 
         if (teamUpdateMemberDTO == null || teamUpdateMemberDTO.getTeamId() == null
-                || teamUpdateMemberDTO.getUserId() == null
-                || (teamUpdateMemberDTO.getTeamMemberType() != ITeamConstant.TEAM_MEMBER_TYPE_ADMINISTRATOR
-                && teamUpdateMemberDTO.getTeamMemberType() != ITeamConstant.TEAM_MEMBER_TYPE_GENERAL)) {
-            return ResponseUtil.error(403, "参数错误");
+                || teamUpdateMemberDTO.getUserId() == null ) {
+            return ResponseUtil.error(403, "参数不能为空");
+        }
+        if (teamUpdateMemberDTO.getTeamMemberType() != ITeamConstant.TEAM_MEMBER_TYPE_ADMINISTRATOR
+                && teamUpdateMemberDTO.getTeamMemberType() != ITeamConstant.TEAM_MEMBER_TYPE_GENERAL) {
+            return ResponseUtil.error(403, "参数类型错误");
         }
 
         // 检查用户是否是团队管理员

@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 第三方账号绑定表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ThirdParty extends BasicsEntity {

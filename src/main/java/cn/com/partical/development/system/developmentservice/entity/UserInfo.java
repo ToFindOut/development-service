@@ -9,6 +9,7 @@ import java.util.Date;
 /**
  * 用户表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class UserInfo extends BasicsEntity {

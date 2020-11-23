@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 系统配置表
  */
+@SuppressWarnings("ALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class SysSetting extends BasicsEntity {

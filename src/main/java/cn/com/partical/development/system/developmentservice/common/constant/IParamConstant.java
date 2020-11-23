@@ -15,4 +15,14 @@ public interface IParamConstant {
      * 下划线
      */
     String UNDERLINE = "_";
+
+    /**
+     * 请求头token
+     */
+    String TOKEN = "token";
+
+    /**
+     * 开关状态
+     */
+    String SWITCH_STATE = "true";
 }
