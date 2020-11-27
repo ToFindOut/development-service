@@ -12,13 +12,19 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class DocumentCatalog extends BasicsEntity {
 
-  // 目录名
+  /**
+   * 目录名
+   */
   private String catalogName;
 
-  //父目录ID
+  /**
+   * 父目录ID
+   */
   private long superCatalogId;
 
-  // 项目ID
+  /**
+   * 项目ID
+   */
   private long projectId;
 
 }

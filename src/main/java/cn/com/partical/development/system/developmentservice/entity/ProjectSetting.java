@@ -12,10 +12,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ProjectSetting extends BasicsEntity {
 
-  // 项目设置
+  /**
+   * 项目设置
+   */
   private String projectSetting;
 
-  // 项目id
+  /**
+   * 项目id
+   */
   private long projectId;
 
 }

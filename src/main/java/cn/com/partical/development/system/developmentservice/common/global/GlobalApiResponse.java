@@ -4,8 +4,7 @@ import lombok.Data;
 
 /**
  * GlobalApiResponse：微服务接口统一返回码
- * @author：Alex
- * @create：2019-08-19 10:37
+ * @author Alex
  */
 @Data
 @SuppressWarnings("unchecked")

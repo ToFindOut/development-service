@@ -26,16 +26,16 @@ public interface ITeamMemberMapper extends BaseMapper<TeamMember> {
      * @param teamId 团队Id
      * @return 状态
      */
-    @Update("UPDATE team_member SET is_delete = 1 WHERE team_id = #{teamId}")
+    @Update("UPDATE team_member SET is_delete = 1 WHERE team_id = #{teamId} AND is_delete = 0")
     int delTeamMemberInfoByTeamId(@Param("teamId") Long teamId);
 
     /**
      * 根据用户Id查询所有团队Id
-     *
+     * 并且为管理员或创建者的团队
      * @param userId 用户Id
      * @return 团队Id
      */
-    @Select("SELECT team_id FROM team_member WHERE  user_id = #{userId} AND active_flag = 0")
+    @Select("SELECT team_id FROM team_member WHERE  user_id = #{userId} AND team_member_type IN (0,2) AND is_delete = 0")
     List<Long> listTeamIdByUserId(@Param("userId") Long userId);
 
     /**
@@ -44,7 +44,7 @@ public interface ITeamMemberMapper extends BaseMapper<TeamMember> {
      * @param userId 用户Id
      * @return 状态
      */
-    @Update("UPDATE team_member SET is_delete = 1 WHERE team_id = #{teamId} AND user_id = #{userId}")
+    @Update("UPDATE team_member SET is_delete = 1 WHERE team_id = #{teamId} AND user_id = #{userId} AND team_member_type != 2 AND is_delete = 0")
     int removeTeamMemberUserByTeamId(@Param("teamId") Long teamId, @Param("userId") Long userId);
 
     /**
@@ -54,7 +54,7 @@ public interface ITeamMemberMapper extends BaseMapper<TeamMember> {
      * @return 移除状态
      */
     @Update("<script>"+
-            "UPDATE team_member SET is_delete = 1 WHERE user_id = #{userId} AND team_id IN \n"+
+            "UPDATE team_member SET is_delete = 1 WHERE user_id = #{userId} AND team_member_type != 2 AND is_delete = 0 AND team_id IN \n"+
                 "<foreach collection='teamIdList' item='id' open='(' separator=',' close=')'>" +
                     "#{id}\n" +
                 "</foreach>" +
@@ -78,4 +78,14 @@ public interface ITeamMemberMapper extends BaseMapper<TeamMember> {
             "    a.is_delete = 0 \n" +
             "    AND a.team_id = #{teamId}")
     IPage<TeamMemberDTO> searchListTeamMemberInfo(Page<Object> page, @Param("teamId") Long teamId);
+
+    /**
+     * 更新团队成员信息
+     * @param userId 用户ID
+     * @param teamId 团队ID
+     * @param teamMemberType 类型  0 管理员 1 普通成员
+     * @return 更新状态
+     */
+    @Update("UPDATE team_member SET team_member_type = #{teamMemberType} WHERE user_id = #{userId} AND team_id = #{teamId} AND is_delete = 0")
+    boolean updateTeamMemberInfo(@Param("userId") Long userId,@Param("teamId")  Long teamId, @Param("teamMemberType") Integer teamMemberType);
 }

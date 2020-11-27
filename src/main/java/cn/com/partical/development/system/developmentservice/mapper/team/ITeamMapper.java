@@ -25,14 +25,14 @@ public interface ITeamMapper extends BaseMapper<TeamInfo> {
      * @return 团队信息
      */
     @Select("SELECT\n" +
-            "    a.id AS teamtId, \n" +
-            "    a.team_name AS teamtName, \n" +
+            "    a.id AS teamId, \n" +
+            "    a.team_name AS teamName, \n" +
             "    a.team_state AS teamState \n" +
             "FROM\n" +
             "    team_info a\n" +
             "    LEFT JOIN team_member b ON a.id = b.team_id \n" +
             "WHERE\n" +
-            "    a.team_name LIKE '%teamName%' \n" +
+            "    a.team_name LIKE CONCAT('%',#{teamName},'%') \n" +
             "    AND a.is_delete = 0 \n" +
             "    AND b.is_delete = 0 \n" +
             "    AND b.user_id = #{userId}\n" +

@@ -46,8 +46,8 @@ public class BasicsEntity implements Serializable {
     /**
      * 数据状态
      */
-    @TableField(value = "active_flag")
-    private Short activeFlag;
+    @TableField(value = "is_delete")
+    private Short isDelete;
 
     @TableField(value = "version")
     @Version

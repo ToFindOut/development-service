@@ -61,7 +61,14 @@ public class TeamController extends BaseController {
         BeanUtil.copyProperties(teamSettingDTO, teamInfo);
 
         if (teamService.saveOrUpdate(teamInfo)) {
-            return ResponseUtil.error("更新成功");
+            if (teamSettingDTO.getId() == null) {
+                // 新增团队成员表
+                TeamMember teamMember = new TeamMember();
+                teamMember.setTeamId(teamInfo.getId());
+                teamMember.setUserId(userId);
+                teamMemberService.save(teamMember);
+            }
+            return ResponseUtil.success("更新成功");
         }
 
         return ResponseUtil.error("更新失败");
@@ -78,9 +85,9 @@ public class TeamController extends BaseController {
             return ResponseUtil.error(401, "用户身份已过期");
         }
 
-        // 检查用户是否是团队管理员
-        if (teamMemberService.checkUserIsTeamAdministrator(userId,teamId)) {
-            return ResponseUtil.error(801, "权限不足, 仅管理员才可以设置");
+        // 检查用户是否是团队创建者
+        if (teamMemberService.checkUserIsTeamCreator(userId,teamId)) {
+            return ResponseUtil.error(801, "权限不足, 仅创建者才可以解散团队");
         }
 
         // 解散团队成员
@@ -107,18 +114,36 @@ public class TeamController extends BaseController {
             return ResponseUtil.error(403, "参数不能为空");
         }
 
-        // 检查用户是否是团队管理员
-        if (teamMemberService.checkUserIsTeamAdministrator(userId,teamAddMemberDTO.getTeamId())) {
+        if (teamAddMemberDTO.getTeamMemberType() != ITeamConstant.TEAM_MEMBER_TYPE_ADMINISTRATOR && teamAddMemberDTO.getTeamMemberType() != ITeamConstant.TEAM_MEMBER_TYPE_GENERAL) {
+            return ResponseUtil.error(405, "参数类型错误");
+        }
+
+        if (userId.equals(teamAddMemberDTO.getUserId())) {
+            return ResponseUtil.error(405, "添加人不能是自己");
+        }
+
+        // 检查用户是否是团队管理员或创建者
+        if (teamMemberService.checkUserIsTeamAdministratorOrCreator(userId,teamAddMemberDTO.getTeamId())) {
             return ResponseUtil.error(801, "权限不足, 仅管理员才可以设置");
         }
 
         // 添加团队成员表
         TeamMember teamMember = new TeamMember();
-        teamMember.setUserId(teamAddMemberDTO.getTeamId());
+        teamMember.setUserId(teamAddMemberDTO.getUserId());
         teamMember.setTeamId(teamAddMemberDTO.getTeamId());
         teamMember.setTeamMemberType(teamAddMemberDTO.getTeamMemberType());
 
         List<ProjectMember> projectMemberList = new LinkedList<>();
+
+        teamAddMemberDTO.getProjectInfoList().forEach(n->{
+            ProjectMember projectMember = new ProjectMember();
+            BeanUtil.copyProperties(n, projectMember);
+
+            projectMemberList.add(projectMember);
+        });
+
+
+
         BeanUtil.copyProperties(teamAddMemberDTO.getProjectInfoList(), projectMemberList);
 
         if (this.saveMemberInfo(teamMember, projectMemberList)) {
@@ -130,7 +155,7 @@ public class TeamController extends BaseController {
 
     @Transactional(rollbackFor = Exception.class)
     boolean saveMemberInfo(TeamMember teamMember, List<ProjectMember> projectMemberList) {
-        return teamMemberService.updateTeamMemberInfo(teamMember) && projectMemberService.saveProjectMemberInfo(projectMemberList);
+        return teamMemberService.save(teamMember) && projectMemberService.saveBatch(projectMemberList);
     }
 
 
@@ -154,16 +179,21 @@ public class TeamController extends BaseController {
             return ResponseUtil.error(403, "参数类型错误");
         }
 
-        // 检查用户是否是团队管理员
-        if (teamMemberService.checkUserIsTeamAdministrator(userId,teamUpdateMemberDTO.getTeamId())) {
+        if (userId.equals(teamUpdateMemberDTO.getUserId())) {
+            return ResponseUtil.error(405, "修改人不能是自己");
+        }
+
+        // 检查用户是否是团队管理员或创建者
+        if (teamMemberService.checkUserIsTeamAdministratorOrCreator(userId,teamUpdateMemberDTO.getTeamId())) {
             return ResponseUtil.error(801, "权限不足, 仅管理员才可以设置");
         }
 
-        TeamMember teamMember = new TeamMember();
+        // 检查用户是否是团队创建者
+        if (!teamMemberService.checkUserIsTeamCreator(teamUpdateMemberDTO.getUserId(), teamUpdateMemberDTO.getTeamId())) {
+            return ResponseUtil.error(801, "权限不足, 无法修改创建者身份");
+        }
 
-        BeanUtil.copyProperties(teamUpdateMemberDTO, teamMember);
-
-        if (teamMemberService.updateTeamMemberInfo(teamMember)) {
+        if (teamMemberService.updateTeamMemberInfo(teamUpdateMemberDTO.getUserId(), teamUpdateMemberDTO.getTeamId(), teamUpdateMemberDTO.getTeamMemberType())) {
             return ResponseUtil.success("修改成功");
         }
 
@@ -184,13 +214,17 @@ public class TeamController extends BaseController {
             return ResponseUtil.error(403, "参数错误");
         }
 
-        // 检查用户是否是团队管理员
-        if (teamMemberService.checkUserIsTeamAdministrator(userId,teamRemoveDTO.getTeamId())) {
+        // 检查用户是否是团队管理员或创建者
+        if (teamMemberService.checkUserIsTeamAdministratorOrCreator(userId,teamRemoveDTO.getTeamId())) {
             return ResponseUtil.error(801, "权限不足, 仅管理员才可以设置");
         }
 
         switch (teamRemoveDTO.getType()) {
             case ITeamConstant.TEAM_MEMBER_REMOVE_STATE_CURRENT:
+                // 检查用户是否是团队创建者
+                if (teamMemberService.checkUserIsTeamCreator(teamRemoveDTO.getTeamUserId(), teamRemoveDTO.getTeamId())) {
+                    return ResponseUtil.error(801, "权限不足, 无法移除团队创建者");
+                }
                 // 将成员移除当前团队
                 if (teamMemberService.removeTeamMemberUserByTeamId(teamRemoveDTO.getTeamId(), teamRemoveDTO.getTeamUserId())) {
                     return ResponseUtil.success("移除成功");
@@ -202,7 +236,7 @@ public class TeamController extends BaseController {
                 if (myTeamIds.size() < 1) {
                     return ResponseUtil.error(406, "当前没有团队");
                 }
-                if (teamMemberService.batchRemoveTeamMemberUser(myTeamIds, userId)) {
+                if (teamMemberService.batchRemoveTeamMemberUser(myTeamIds, teamRemoveDTO.getTeamUserId())) {
                     return ResponseUtil.success("移除成功");
                 }
                 break;
@@ -214,7 +248,7 @@ public class TeamController extends BaseController {
     }
 
     @ApiOperation(value = "团队成员列表")
-    @RequestMapping(value = "/list/team/member/{teamId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/member/{teamId}", method = RequestMethod.GET)
     public GlobalApiResponse<TeamMemberDTO> listTeamMemberInfo(HttpServletRequest request,
                                                        @PathVariable Long teamId,
                                                        @RequestParam(value = "pageIndex", required = false, defaultValue = "1") int pageIndex,
@@ -231,8 +265,8 @@ public class TeamController extends BaseController {
     }
 
     @ApiOperation(value = "团队列表")
-    @RequestMapping(value = "/list/team", method = RequestMethod.GET)
-    public GlobalApiResponse<TeamMemberDTO> listTeamInfo(HttpServletRequest request,
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public GlobalApiResponse<TeamInfoDTO> listTeamInfo(HttpServletRequest request,
                                                        @RequestParam String teamName,
                                                        @RequestParam(value = "pageIndex", required = false, defaultValue = "1") int pageIndex,
                                                        @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {

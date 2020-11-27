@@ -12,16 +12,27 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ProjectInfo extends BasicsEntity {
 
-  // 项目名
+  /**
+   * 团队ID
+   */
+  private Long teamId;
+
+  /**
+   * 项目名
+   */
   private String projectName;
 
-  // 项目介绍
+  /**
+   * 项目介绍
+   */
   private String projectIntroduce;
 
-  // 开放类型 0：私有，1：团队可见，2：项目成员可见，3：企业内可见，4：公开
-  private byte openType;
+  /**
+   * 开放类型 0：私有，1：团队可见，2：项目成员可见，3：企业内可见，4：公开
+   */
+  private Integer openType;
 
   // 项目状态 0：正常，1：冻结
-  private byte projectState;
+  private Integer projectState;
 
 }

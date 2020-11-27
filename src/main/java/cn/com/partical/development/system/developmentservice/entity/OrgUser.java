@@ -12,10 +12,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class OrgUser extends BasicsEntity {
 
-  // 企业ID
+  /**
+   * 企业ID
+   */
   private long orgId;
 
-  // 用户ID
+  /**
+   * 用户ID
+   */
   private long userId;
 
 }

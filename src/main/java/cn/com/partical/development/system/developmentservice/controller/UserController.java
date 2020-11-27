@@ -15,6 +15,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.*;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.http.HttpRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -41,7 +42,7 @@ public class UserController extends BaseController {
     private RedisUtil redisUtil;
 
     @Value("${setting.sms.switch}")
-    private String SMS_SWITCH;
+    private String notificationSwitch;
 
     @ApiOperation(value = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -118,7 +119,7 @@ public class UserController extends BaseController {
 
         String code;
         // 发送短信验证码开关 true 开启 false 关闭
-        if (IParamConstant.SWITCH_STATE.equals(SMS_SWITCH)) {
+        if (IParamConstant.SWITCH_STATE.equals(notificationSwitch)) {
             code = SendSmsVerificationCode.sendSmsVerificationCodeViaPhoneNumber(phone);
         } else {
             code = RandomStringUtils.randomNumeric(4);
@@ -321,9 +322,9 @@ public class UserController extends BaseController {
 
 
     @ApiOperation(value = "搜索成员")
-    @RequestMapping(value = "/search/member", method = RequestMethod.POST)
+    @RequestMapping(value = "/search/member/{param}", method = RequestMethod.GET)
     public GlobalApiResponse<UserSearchBaseDTO> searchMember(HttpServletRequest request,
-                                                  @RequestBody UserSearchDTO userSearchDTO) {
+                                                  @PathVariable String param) {
 
         Long userId = super.getUserId(request);
 
@@ -331,10 +332,21 @@ public class UserController extends BaseController {
             return ResponseUtil.error(401, "用户身份已过期");
         }
 
-        if (userSearchDTO == null) {
+        if (StrUtil.isBlank(param)) {
             return ResponseUtil.error(403, "搜索参数不能为空");
         }
 
-        return ResponseUtil.success(userService.searchUserInfo(userSearchDTO));
+        Integer type = 2;
+
+        // 校验搜索参数是否是手机号
+        if (PhoneUtil.isPhone(param)) {
+            type = 1;
+        } else {
+            if (param.equals(userId.toString())) {
+                return ResponseUtil.error(405, "搜索人不能是自己本身");
+            }
+        }
+
+        return ResponseUtil.success(userService.searchUserInfo(param, type));
     }
 }

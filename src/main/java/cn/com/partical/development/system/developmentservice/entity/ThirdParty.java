@@ -12,16 +12,24 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ThirdParty extends BasicsEntity {
 
-  // 用户ID
+  /**
+   * 用户ID
+   */
   private long userId;
 
-  // 第三方唯一ID
+  /**
+   * 第三方唯一ID
+   */
   private String thirdPartyId;
 
-  // 第三方详情
+  /**
+   * 第三方详情
+   */
   private String thirdPartyDetails;
 
-  // 第三方类型 0：微信，1：支付宝
+  /**
+   * 第三方类型 0：微信，1：支付宝
+   */
   private byte thirdPartyType;
 
 }

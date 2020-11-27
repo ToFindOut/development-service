@@ -12,16 +12,24 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class TeamMember extends BasicsEntity {
 
-  // 团队ID
+  /**
+   * 团队ID
+   */
   private long teamId;
 
-  // 用户ID
+  /**
+   * 用户ID
+   */
   private long userId;
 
-  // 成员类型 0：管理员，1：普通成员
+  /**
+   * 成员类型 0：管理员，1：普通成员
+   */
   private byte teamMemberType;
 
-  // 成员状态 0：正常，1：冻结
+  /**
+   * 成员状态 0：正常，1：冻结
+   */
   private byte teamMemberState;
 
 }

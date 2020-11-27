@@ -7,9 +7,7 @@ package cn.com.partical.development.system.developmentservice.common.constant;
  */
 public interface ITeamConstant {
 
-    /*************** 团队成员类型 ***************/
-
-    // 管理员
+    /*************** 团队成员类型 管理员***************/
     int TEAM_MEMBER_TYPE_ADMINISTRATOR = 0;
 
     /**
@@ -17,9 +15,12 @@ public interface ITeamConstant {
      */
     int TEAM_MEMBER_TYPE_GENERAL = 1;
 
-    /*************** 团队成员移除状态 ***************/
+    /**
+     * 创建者
+     */
+    int TEAM_MEMBER_TYPE_CREATOR = 2;
 
-    // 将用户从我的当前团队中移除
+    /*************** 团队成员移除状态 将用户从我的当前团队中移除***************/
     int TEAM_MEMBER_REMOVE_STATE_CURRENT = 0;
 
     /**

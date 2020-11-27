@@ -9,6 +9,7 @@ import cn.com.partical.development.system.developmentservice.util.filed.ActiveFl
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +21,34 @@ import java.util.List;
  * @date 2020/11/23 10:13
  */
 @Service
-public class TeamMemberServiceImpl implements ITeamMemberService {
+public class TeamMemberServiceImpl extends ServiceImpl<ITeamMemberMapper, TeamMember> implements ITeamMemberService {
 
     @Autowired
     private ITeamMemberMapper teamMemberMapper;
 
     @Override
+    public boolean checkUserIsTeamAdministratorOrCreator(Long userId, Long teamId) {
+        QueryWrapper<TeamMember> teamMemberQueryWrapper = new QueryWrapper<>();
+        teamMemberQueryWrapper.eq("team_id", teamId).eq("user_id", userId).eq("is_delete", ActiveFlagEnum.DEFAULT.getValue())
+        .in("team_member_type", ITeamConstant.TEAM_MEMBER_TYPE_ADMINISTRATOR, ITeamConstant.TEAM_MEMBER_TYPE_CREATOR);
+
+        return teamMemberMapper.selectCount(teamMemberQueryWrapper) < 1;
+    }
+
+    @Override
     public boolean checkUserIsTeamAdministrator(Long userId, Long teamId) {
         QueryWrapper<TeamMember> teamMemberQueryWrapper = new QueryWrapper<>();
-        teamMemberQueryWrapper.eq("team_id", teamId).eq("user_id", userId).eq("active_flag", ActiveFlagEnum.DEFAULT.getValue())
-        .eq("team_member_type", ITeamConstant.TEAM_MEMBER_TYPE_ADMINISTRATOR);
+        teamMemberQueryWrapper.eq("team_id", teamId).eq("user_id", userId).eq("is_delete", ActiveFlagEnum.DEFAULT.getValue())
+                .eq("team_member_type", ITeamConstant.TEAM_MEMBER_TYPE_ADMINISTRATOR);
+
+        return teamMemberMapper.selectCount(teamMemberQueryWrapper) > 0;
+    }
+
+    @Override
+    public boolean checkUserIsTeamCreator(Long userId, Long teamId) {
+        QueryWrapper<TeamMember> teamMemberQueryWrapper = new QueryWrapper<>();
+        teamMemberQueryWrapper.eq("team_id", teamId).eq("user_id", userId).eq("is_delete", ActiveFlagEnum.DEFAULT.getValue())
+                .eq("team_member_type", ITeamConstant.TEAM_MEMBER_TYPE_CREATOR);
 
         return teamMemberMapper.selectCount(teamMemberQueryWrapper) < 1;
     }
@@ -40,8 +59,8 @@ public class TeamMemberServiceImpl implements ITeamMemberService {
     }
 
     @Override
-    public boolean updateTeamMemberInfo(TeamMember teamMember) {
-        return teamMemberMapper.updateById(teamMember) > 0;
+    public boolean updateTeamMemberInfo(Long userId, Long teamId, Integer teamMemberType) {
+        return teamMemberMapper.updateTeamMemberInfo(userId, teamId, teamMemberType);
     }
 
     @Override

@@ -12,13 +12,19 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class DocumentLabel extends BasicsEntity {
 
-  // 标签名
+  /**
+   * 标签名
+   */
   private String labelName;
 
-  // 标签内容
+  /**
+   * 标签内容
+   */
   private String labelContent;
 
-  // 文档版本记录ID
+  /**
+   * 文档版本记录ID
+   */
   private long documentVersionId;
 
 }

@@ -3,6 +3,7 @@ package cn.com.partical.development.system.developmentservice.service.team;
 import cn.com.partical.development.system.developmentservice.dto.team.TeamMemberDTO;
 import cn.com.partical.development.system.developmentservice.entity.TeamMember;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
@@ -11,14 +12,31 @@ import java.util.List;
  * @version 1.0
  * @date 2020/11/23 10:12
  */
-public interface ITeamMemberService {
+public interface ITeamMemberService extends IService<TeamMember> {
     /**
-     * 检查用户是否是团队管理者
+     * 检查用户是否是团队管理者或创建者
      * @param userId 用户Id
      * @param teamId 团队Id
      * @return 状态
      */
+    boolean checkUserIsTeamAdministratorOrCreator(Long userId, Long teamId);
+
+
+    /**
+     * 检查用户是否是团队管理者
+     * @param userId 用户ID
+     * @param teamId 团队ID
+     * @return 状态
+     */
     boolean checkUserIsTeamAdministrator(Long userId, Long teamId);
+
+    /**
+     * 检查用户是否是团队创建者
+     * @param userId 用户Id
+     * @param teamId 团队Id
+     * @return 状态
+     */
+    boolean checkUserIsTeamCreator(Long userId, Long teamId);
 
     /**
      * 删除团队成员信息
@@ -29,10 +47,12 @@ public interface ITeamMemberService {
 
     /**
      * 更新团队成员信息
-     * @param teamMember 团队成员参数
+     * @param userId 用户ID
+     * @param teamId 团队ID
+     * @param teamMemberType 类型  0 管理员 1 普通成员
      * @return 更新状态
      */
-    boolean updateTeamMemberInfo(TeamMember teamMember);
+    boolean updateTeamMemberInfo(Long userId, Long teamId, Integer teamMemberType);
 
     /**
      * 根据用户Id查询所有团队Id

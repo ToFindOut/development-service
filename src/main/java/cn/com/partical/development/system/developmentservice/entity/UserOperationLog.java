@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
+ * @author 旺仔
  * 用户操作记录表
  */
 @SuppressWarnings("ALL")
@@ -12,22 +13,34 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class UserOperationLog extends BasicsEntity {
 
-  // 用户ID
+  /**
+   * 用户ID
+   */
   private long userId;
 
-  // 操作唯一UUID
+  /**
+   * 操作唯一UUID
+   */
   private String operationUuid;
 
-  // 请求URL
+  /**
+   * 请求URL
+   */
   private String requestUrl;
 
-  // 请求数据
+  /**
+   * 请求数据
+   */
   private String requestData;
 
-  // 响应数据
+  /**
+   * 响应数据
+   */
   private String responseData;
 
-  // 方法调用链
+  /**
+   * 方法调用链
+   */
   private String functionCallChain;
 
 }

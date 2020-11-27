@@ -12,10 +12,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class TeamInfo extends BasicsEntity {
 
-  // 团队名
+  /**
+   * 团队名
+    */
   private String teamName;
 
-  // 团队状态 0：正常，1：冻结
+  /**
+   * 团队状态 0：正常，1：冻结
+   */
   private byte teamState;
 
 }

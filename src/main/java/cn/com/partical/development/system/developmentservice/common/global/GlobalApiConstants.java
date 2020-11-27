@@ -2,8 +2,7 @@ package cn.com.partical.development.system.developmentservice.common.global;
 
 /**
  * GlobalApiConstants：全局Api接口常量接口
- * @author：Alex
- * @create：2019-08-19 10:32
+ * @author Alex
  */
 public interface GlobalApiConstants {
     /**

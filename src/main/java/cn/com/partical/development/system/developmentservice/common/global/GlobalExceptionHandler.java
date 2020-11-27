@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * GlobalExceptionHandler：全局异常捕获
- * @author：Alex
- * @create：2019-08-19 10:56
+ * @author Alex
  */
 @SuppressWarnings("unchecked")
 @Slf4j

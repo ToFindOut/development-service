@@ -74,8 +74,9 @@ public interface IUserService {
 
     /**
      * 搜索用户信息
-     * @param userSearchDTO 用户搜索信息
+     * @param param 搜索参数
+     * @param type 1 手机号 2 用户Id
      * @return 参数
      */
-    UserSearchBaseDTO searchUserInfo(UserSearchDTO userSearchDTO);
+    UserSearchBaseDTO searchUserInfo(String param, Integer type);
 }

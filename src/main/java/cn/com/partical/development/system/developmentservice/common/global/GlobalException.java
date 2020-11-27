@@ -4,8 +4,7 @@ import lombok.Data;
 
 /**
  * GlobalException：全局异常信息
- * @author：Alex
- * @create：2019-08-19-10:55
+ * @author Alex
  */
 @Data
 @SuppressWarnings("unchecked")

@@ -5,9 +5,7 @@ import cn.com.partical.development.system.developmentservice.common.constant.IPa
 import cn.com.partical.development.system.developmentservice.util.cache.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * @author zhangWang

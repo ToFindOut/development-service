@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "团队项目参数")
-class TeamProjectDTO implements Serializable {
+public class TeamProjectDTO implements Serializable {
 
     @ApiModelProperty(value = "项目Id")
     private Long projectId;

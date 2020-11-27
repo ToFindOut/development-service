@@ -8,6 +8,7 @@ import cn.com.partical.development.system.developmentservice.entity.UserInfo;
 import cn.com.partical.development.system.developmentservice.mapper.user.IUserMapper;
 import cn.com.partical.development.system.developmentservice.service.user.IUserService;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,12 +97,16 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserSearchBaseDTO searchUserInfo(UserSearchDTO userSearchDTO) {
+    public UserSearchBaseDTO searchUserInfo(String param, Integer type) {
 
         UserSearchBaseDTO userSearchBaseDTO = new UserSearchBaseDTO();
 
         QueryWrapper<UserInfo> userInfoQueryWrapper = new QueryWrapper<>();
-        userInfoQueryWrapper.eq("id", userSearchDTO.getId()).or().eq("phone", userSearchDTO.getPhone());
+        if (type == 1) {
+            userInfoQueryWrapper.eq("phone", param);
+        } else {
+            userInfoQueryWrapper.eq("id", param);
+        }
 
         UserInfo userInfo = userMapper.selectOne(userInfoQueryWrapper);
 

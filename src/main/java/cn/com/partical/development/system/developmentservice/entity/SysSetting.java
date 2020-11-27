@@ -12,7 +12,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class SysSetting extends BasicsEntity {
 
-  // 系统配置 json
+  /**
+   * 系统配置 json
+   */
   private String systemSetting;
 
 }

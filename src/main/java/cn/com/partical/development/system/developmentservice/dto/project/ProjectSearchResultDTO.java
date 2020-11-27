@@ -16,9 +16,11 @@ import lombok.EqualsAndHashCode;
 public class ProjectSearchResultDTO {
 
     @ApiModelProperty(value = "项目Id")
-    private Long projectId;
+    private Long id;
 
     @ApiModelProperty(value = "项目名称")
     private String projectName;
 
+    @ApiModelProperty(value = "项目介绍")
+    private String projectIntroduce;
 }
