@@ -24,8 +24,9 @@ public interface IProjectMapper extends BaseMapper<ProjectInfo> {
      * @param projectName 项目名称
      * @return 项目信息
      */
-    @Select("SELECT\n" +
-            "    a.id AS projectId, \n" +
+    @Select("<script>"+
+            "SELECT\n" +
+            "    a.id, \n" +
             "    a.project_name AS projectName, \n" +
             "    a.project_introduce AS projectIntroduce, \n" +
             "    a.open_type AS openType, \n" +
@@ -34,12 +35,15 @@ public interface IProjectMapper extends BaseMapper<ProjectInfo> {
             "    project_info a\n" +
             "    LEFT JOIN project_member b ON a.id = b.project_id \n" +
             "WHERE\n" +
-            "    a.project_name LIKE CONCAT('%',#{proejctName},'%') \n" +
-            "    AND a.is_delete = 0 \n" +
-            "    AND b.is_delete = 0 \n" +
-            "    AND b.user_id = #{userId}\n" +
+            "   a.is_delete = 0 \n" +
+            "AND b.is_delete = 0 \n" +
+            "AND b.user_id = #{userId}\n" +
+            "<if test='projectName != null and \"\" != projectName'>"+
+                "AND    a.project_name LIKE CONCAT('%',#{projectName},'%') \n" +
+            "</if>"+
             "ORDER BY\n" +
-            "    a.create_time DESC")
+            "    a.create_time DESC"+
+            "</script>")
     IPage<ProjectUpdateDTO> listProjectInfo(Page<Object> page,
                                             @Param("userId") Long userId,
                                             @Param("projectName") String projectName);

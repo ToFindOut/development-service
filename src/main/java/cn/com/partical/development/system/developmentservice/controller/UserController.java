@@ -6,7 +6,11 @@ import cn.com.partical.development.system.developmentservice.common.constant.IUs
 import cn.com.partical.development.system.developmentservice.common.global.GlobalApiResponse;
 import cn.com.partical.development.system.developmentservice.common.global.GlobalException;
 import cn.com.partical.development.system.developmentservice.dto.user.*;
+import cn.com.partical.development.system.developmentservice.entity.TeamInfo;
+import cn.com.partical.development.system.developmentservice.entity.TeamMember;
 import cn.com.partical.development.system.developmentservice.entity.UserInfo;
+import cn.com.partical.development.system.developmentservice.service.team.ITeamMemberService;
+import cn.com.partical.development.system.developmentservice.service.team.ITeamService;
 import cn.com.partical.development.system.developmentservice.service.user.IUserService;
 import cn.com.partical.development.system.developmentservice.util.api.ResponseUtil;
 import cn.com.partical.development.system.developmentservice.util.cache.RedisUtil;
@@ -15,7 +19,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.*;
 import cn.hutool.crypto.SecureUtil;
-import cn.hutool.http.HttpRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -43,10 +46,16 @@ public class UserController extends BaseController {
 
     @Value("${setting.sms.switch}")
     private String notificationSwitch;
+    
+    @Autowired
+    private ITeamService teamService;
+    
+    @Autowired
+    private ITeamMemberService teamMemberService;
 
     @ApiOperation(value = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public GlobalApiResponse<String> login(@RequestBody UserLoginDTO userLoginDTO) {
+    public GlobalApiResponse<UserBaseInfoDTO> login(@RequestBody UserLoginDTO userLoginDTO) {
 
         if (userLoginDTO == null || StrUtil.hasBlank(userLoginDTO.getPhone(),userLoginDTO.getPwd())) {
             return ResponseUtil.error(403, "参数不能为空");
@@ -181,9 +190,18 @@ public class UserController extends BaseController {
         userInfo.setPwd(SecureUtil.md5(userRegisterInfoDTO.getPwd()));
 
         if (userService.registerUserInfo(userInfo)) {
+            TeamInfo teamInfo = new TeamInfo();
+            teamInfo.setTeamName(userRegisterInfoDTO.getPhone());
+            teamService.save(teamInfo);
+
+            TeamMember teamMember = new TeamMember();
+            teamMember.setTeamId(teamInfo.getId());
+            teamMember.setUserId(userInfo.getId());
+            teamMemberService.save(teamMember);
+           
             return ResponseUtil.success("注册成功");
         }
-
+        
         return ResponseUtil.error(405, "注册失败,请重试");
     }
 

@@ -1,9 +1,12 @@
 package cn.com.partical.development.system.developmentservice.service.project;
 
 import cn.com.partical.development.system.developmentservice.dto.project.DocumentCatalogDTO;
+import cn.com.partical.development.system.developmentservice.dto.project.ProjectCatalogLeftListDTO;
 import cn.com.partical.development.system.developmentservice.entity.DocumentCatalog;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author 旺仔
@@ -22,4 +25,12 @@ public interface IDocumentCatalogService extends IService<DocumentCatalog> {
      */
     IPage<DocumentCatalogDTO> listCatalog(Long superCatalogId, Long projectId,
                                           Integer pageIndex, Integer pageSize);
+
+
+    /**
+     * 左侧文档目录列表
+     * @param projectId 项目ID
+     * @return 目录文档信息
+     */
+    List<ProjectCatalogLeftListDTO> listLeftDocumentCatalogInfo(Long projectId);
 }

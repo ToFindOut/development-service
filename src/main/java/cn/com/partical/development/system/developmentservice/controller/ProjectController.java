@@ -7,6 +7,7 @@ import cn.com.partical.development.system.developmentservice.dto.project.*;
 import cn.com.partical.development.system.developmentservice.entity.DocumentCatalog;
 import cn.com.partical.development.system.developmentservice.entity.DocumentInfo;
 import cn.com.partical.development.system.developmentservice.entity.ProjectInfo;
+import cn.com.partical.development.system.developmentservice.entity.ProjectMember;
 import cn.com.partical.development.system.developmentservice.service.project.IDocumentCatalogService;
 import cn.com.partical.development.system.developmentservice.service.project.IDocumentInfoService;
 import cn.com.partical.development.system.developmentservice.service.project.IProjectMemberService;
@@ -16,6 +17,7 @@ import cn.com.partical.development.system.developmentservice.util.api.ResponseUt
 import cn.com.partical.development.system.developmentservice.util.filed.ActiveFlagEnum;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -104,8 +106,16 @@ public class ProjectController extends BaseController {
         BeanUtil.copyProperties(projectCreateDTO, projectInfo);
 
         if (projectService.save(projectInfo)) {
+            ProjectMember projectMember = new ProjectMember();
+            projectMember.setProjectId(projectInfo.getId());
+            projectMember.setUserId(userId);
+            projectMember.setProjectMemberType(IProjectConstant.PROJECT_MEMBER_TYPE_CREATE);
+            projectMemberService.save(projectMember);
+
             return ResponseUtil.success("创建成功");
         }
+
+
 
         return ResponseUtil.error("创建失败");
     }
@@ -125,9 +135,25 @@ public class ProjectController extends BaseController {
         return ResponseUtil.success(projectService.listProjectInfo(userId, projectName, pageIndex, pageSize));
     }
 
+    @ApiOperation(value = "项目成员列表")
+    @RequestMapping(value = "/list/member/{projectId}", method = RequestMethod.GET)
+    public GlobalApiResponse<ProjectMemberDTO> listMember(HttpServletRequest request,
+                                                    @RequestParam(value = "pageIndex", required = false, defaultValue = "1") int pageIndex,
+                                                    @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                    @PathVariable Long projectId) {
+        Long userId = super.getUserId(request);
+
+        if (userId == null) {
+            return ResponseUtil.error(401, "用户身份已过期");
+        }
+
+        return ResponseUtil.success(projectMemberService.listProjectMemberInfo(projectId, pageIndex, pageSize));
+    }
+
+
     @ApiOperation(value = "修改项目")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public GlobalApiResponse<String> update(HttpServletRequest request,
+    public GlobalApiResponse<ProjectUpdateDTO> update(HttpServletRequest request,
                            @RequestBody ProjectUpdateDTO projectUpdateDTO) {
         Long userId = super.getUserId(request);
 
@@ -184,6 +210,10 @@ public class ProjectController extends BaseController {
 
         if (projectMemberUpdateDTO == null || projectMemberUpdateDTO.getUserId() == null || projectMemberUpdateDTO.getProjectId() == null
                 || projectMemberUpdateDTO.getProjectMemberType() == null || projectMemberUpdateDTO.getType() == null) {
+            return ResponseUtil.error(405, "不能修改自己本身");
+        }
+
+        if (userId.equals(projectMemberUpdateDTO.getUserId())) {
             return ResponseUtil.error(403, "参数不能为空");
         }
 
@@ -352,7 +382,7 @@ public class ProjectController extends BaseController {
         }
 
         if (projectCreateDocumentDTO == null || projectCreateDocumentDTO.getProjectId() == null || projectCreateDocumentDTO.getDocumentType() == null
-                || projectCreateDocumentDTO.getCatalogId() == null || StrUtil.hasBlank(projectCreateDocumentDTO.getDocumentName(),projectCreateDocumentDTO.getDocumentContent())) {
+                || StrUtil.isBlank(projectCreateDocumentDTO.getDocumentName())) {
             return ResponseUtil.error(403, "参数不能为空");
         }
 
@@ -371,4 +401,27 @@ public class ProjectController extends BaseController {
         return ResponseUtil.error("保存失败");
     }
 
+    @ApiOperation(value = "左侧目录列表")
+    @RequestMapping(value = "/left/catalog/{projectId}", method = RequestMethod.GET)
+    public GlobalApiResponse<ProjectCatalogLeftListDTO> listLeftCatalogInfo(HttpServletRequest request,
+                                                                            @PathVariable Long projectId) {
+        Long userId = super.getUserId(request);
+
+        if (userId == null) {
+            return ResponseUtil.error(401, "用户身份已过期");
+        }
+
+
+        return ResponseUtil.success(documentCatalogService.listLeftDocumentCatalogInfo(projectId));
+    }
+
+    @ApiOperation(value = "保存文档信息")
+    @RequestMapping(value = "/save/document/content", method = RequestMethod.POST)
+    public GlobalApiResponse<String> saveDocumentContent(HttpServletRequest request,
+                                                         @RequestBody JSONObject documentContent) {
+        String s = documentContent.toString();
+        System.out.println(s);
+        System.out.println(documentContent.getLong("documentId"));
+        return ResponseUtil.success(new JSONObject(s));
+    }
 }

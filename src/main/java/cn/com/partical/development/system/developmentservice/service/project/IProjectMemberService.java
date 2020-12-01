@@ -1,6 +1,8 @@
 package cn.com.partical.development.system.developmentservice.service.project;
 
+import cn.com.partical.development.system.developmentservice.dto.project.ProjectMemberDTO;
 import cn.com.partical.development.system.developmentservice.entity.ProjectMember;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -73,4 +75,13 @@ public interface IProjectMemberService extends IService<ProjectMember> {
      * @return boolean
      */
     boolean markProject(Long userId, Long projectId);
+
+    /**
+     * 查询项目成员信息
+     * @param projectId 项目ID
+     * @param pageIndex 页码
+     * @param pageSize 每页显示记录条数
+     * @return 项目成员信息
+     */
+    IPage<ProjectMemberDTO> listProjectMemberInfo(Long projectId, Integer pageIndex, Integer pageSize);
 }

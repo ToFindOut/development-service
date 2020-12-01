@@ -57,4 +57,5 @@ public class UserBaseInfoDTO implements Serializable {
     private String identityCard;
 
     private String code;
+
 }

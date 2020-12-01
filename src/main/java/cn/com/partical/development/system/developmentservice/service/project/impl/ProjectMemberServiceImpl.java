@@ -1,12 +1,15 @@
 package cn.com.partical.development.system.developmentservice.service.project.impl;
 
 import cn.com.partical.development.system.developmentservice.common.constant.IProjectConstant;
+import cn.com.partical.development.system.developmentservice.dto.project.ProjectMemberDTO;
 import cn.com.partical.development.system.developmentservice.entity.ProjectMember;
 import cn.com.partical.development.system.developmentservice.mapper.project.IProjectMemberMapper;
 import cn.com.partical.development.system.developmentservice.service.project.IProjectMemberService;
 import cn.com.partical.development.system.developmentservice.util.filed.ActiveFlagEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,13 +75,22 @@ public class ProjectMemberServiceImpl extends ServiceImpl<IProjectMemberMapper, 
 
     @Override
     public boolean updateProjectMemberIdentityInfo(Long userId, Long projectId, Integer projectMemberType) {
-        ProjectMember projectMember = new ProjectMember();
-        projectMember.setProjectMemberType(projectMemberType);
-
         UpdateWrapper<ProjectMember> projectMemberUpdateWrapper = new UpdateWrapper<>();
         projectMemberUpdateWrapper.eq("project_id", projectId).eq("user_id", userId).eq("is_delete", ActiveFlagEnum.DEFAULT.getValue());
 
-        return projectMemberMapper.update(projectMember, projectMemberUpdateWrapper) > 0;
+        ProjectMember projectMember = projectMemberMapper.selectOne(projectMemberUpdateWrapper);
+
+        if (projectMember != null) {
+            projectMember.setProjectMemberType(projectMemberType);
+            return projectMemberMapper.updateById(projectMember) > 0;
+        }
+
+        projectMember = new ProjectMember();
+        projectMember.setProjectMemberType(projectMemberType);
+        projectMember.setUserId(userId);
+        projectMember.setProjectId(projectId);
+
+        return projectMemberMapper.insert(projectMember) > 0;
     }
 
     @Override
@@ -95,5 +107,11 @@ public class ProjectMemberServiceImpl extends ServiceImpl<IProjectMemberMapper, 
     @Override
     public boolean markProject(Long userId, Long projectId) {
         return projectMemberMapper.markProject(userId, projectId);
+    }
+
+    @Override
+    public IPage<ProjectMemberDTO> listProjectMemberInfo(Long projectId, Integer pageIndex, Integer pageSize) {
+        Page<Object> page = new Page<>(pageIndex, pageSize);
+        return projectMemberMapper.listProjectMemberInfo(page, projectId);
     }
 }
