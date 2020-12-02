@@ -2,6 +2,7 @@ package cn.com.partical.development.system.developmentservice.service.project;
 
 import cn.com.partical.development.system.developmentservice.dto.project.ProjectCatalogLeftListDTO;
 import cn.com.partical.development.system.developmentservice.entity.DocumentInfo;
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -26,4 +27,25 @@ public interface IDocumentInfoService extends IService<DocumentInfo> {
      * @return 文档信息
      */
     List<DocumentInfo> findStairDocumentInfoByProjectId(Long projectId);
+
+    /**
+     * 删除文档信息
+     * @param id 文档ID
+     * @return boolean
+     */
+    boolean delDocumentInfoById(Long id);
+
+    /**
+     * 根据文档ID查询文档内容
+     * @param id 文档ID
+     * @return json数据
+     */
+    JSONObject findDocumentContentById(Long id);
+
+    /**
+     * 查询文档信息
+     * @param id 主键ID
+     * @return 文档信息
+     */
+    DocumentInfo findDocumentInfo(Long id);
 }

@@ -1,5 +1,6 @@
 package cn.com.partical.development.system.developmentservice.dto.project;
 
+import cn.hutool.json.JSONObject;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -33,5 +34,5 @@ public class ProjectCreateDocumentDTO implements Serializable {
     private Long catalogId;
 
     @ApiModelProperty(value = "文档内容")
-    private String documentContent;
+    private JSONObject documentContent;
 }

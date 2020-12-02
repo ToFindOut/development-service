@@ -9,6 +9,7 @@ import cn.com.partical.development.system.developmentservice.service.project.IDo
 import cn.com.partical.development.system.developmentservice.service.project.IDocumentInfoService;
 import cn.com.partical.development.system.developmentservice.util.filed.ActiveFlagEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -57,6 +58,26 @@ public class DocumentCatalogServiceImpl extends ServiceImpl<IDocumentCatalogMapp
         projectCatalogLeftListDTOList.addAll(this.documentInfoListFunction(stairDocumentInfo));
 
         return projectCatalogLeftListDTOList;
+    }
+
+    @Override
+    public boolean delCatalogInfoById(Long id) {
+
+        DocumentCatalog documentCatalog = documentCatalogMapper.selectById(id);
+        documentCatalog.setIsDelete(ActiveFlagEnum.DELETE.getValue());
+
+        UpdateWrapper<DocumentCatalog> documentCatalogUpdateWrapper = new UpdateWrapper<>();
+        documentCatalogUpdateWrapper.eq("id", id).eq("is_delete", ActiveFlagEnum.DEFAULT.getValue());
+
+        return documentCatalogMapper.update(documentCatalog, documentCatalogUpdateWrapper) > 0;
+    }
+
+    @Override
+    public DocumentCatalog findDocumentCatalogInfo(Long id) {
+        QueryWrapper<DocumentCatalog> documentCatalogQueryWrapper = new QueryWrapper<>();
+        documentCatalogQueryWrapper.eq("id", id).eq("is_delete", ActiveFlagEnum.DEFAULT.getValue());
+
+        return documentCatalogMapper.selectOne(documentCatalogQueryWrapper);
     }
 
     /**
@@ -119,6 +140,7 @@ public class DocumentCatalogServiceImpl extends ServiceImpl<IDocumentCatalogMapp
             ProjectCatalogLeftListDTO documentInfo= new ProjectCatalogLeftListDTO();
             documentInfo.setDocumentId(x.getId());
             documentInfo.setDocumentName(x.getDocumentName());
+            documentInfo.setParentCatalogId(x.getCatalogId());
 
             documentInfoList.add(documentInfo);
         });

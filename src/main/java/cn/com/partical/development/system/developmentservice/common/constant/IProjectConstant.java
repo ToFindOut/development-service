@@ -64,4 +64,9 @@ public interface IProjectConstant {
      * markdown类型
      */
     int DOCUMENT_TYPE_MARKDOWN = 1;
+
+    /********************* 操作类型 1 目录 2 文档 ***********************/
+    int OPERATION_TYPE_CATALOG = 1;
+
+    int OPERATION_TYPE_DOCUMENT = 2;
 }

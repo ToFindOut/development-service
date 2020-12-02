@@ -30,6 +30,9 @@ public class ProjectCatalogLeftListDTO implements Serializable {
     @ApiModelProperty(value = "文档名称")
     private String documentName;
 
+    @ApiModelProperty(value = "父文档ID")
+    private Long parentCatalogId;
+
     @ApiModelProperty(value = "子集")
     private List<ProjectCatalogLeftListDTO> subjectProList;
 }

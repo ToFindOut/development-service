@@ -33,4 +33,18 @@ public interface IDocumentCatalogService extends IService<DocumentCatalog> {
      * @return 目录文档信息
      */
     List<ProjectCatalogLeftListDTO> listLeftDocumentCatalogInfo(Long projectId);
+
+    /**
+     * 删除目录信息
+     * @param id 目录ID
+     * @return boolean
+     */
+    boolean delCatalogInfoById(Long id);
+
+    /**
+     * 查询文档目录信息
+     * @param id 目录ID
+     * @return 目录信息
+     */
+    DocumentCatalog findDocumentCatalogInfo(Long id);
 }

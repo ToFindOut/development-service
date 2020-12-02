@@ -17,7 +17,6 @@ import cn.com.partical.development.system.developmentservice.util.api.ResponseUt
 import cn.com.partical.development.system.developmentservice.util.filed.ActiveFlagEnum;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -381,19 +380,23 @@ public class ProjectController extends BaseController {
             return ResponseUtil.error(401, "用户身份已过期");
         }
 
-        if (projectCreateDocumentDTO == null || projectCreateDocumentDTO.getProjectId() == null || projectCreateDocumentDTO.getDocumentType() == null
-                || StrUtil.isBlank(projectCreateDocumentDTO.getDocumentName())) {
+        if (projectCreateDocumentDTO == null || projectCreateDocumentDTO.getProjectId() == null || StrUtil.isBlank(projectCreateDocumentDTO.getDocumentName())) {
             return ResponseUtil.error(403, "参数不能为空");
         }
 
-        if (projectCreateDocumentDTO.getDocumentType() != IProjectConstant.DOCUMENT_TYPE_HTTP
-                && projectCreateDocumentDTO.getDocumentType() != IProjectConstant.DOCUMENT_TYPE_MARKDOWN) {
-            return ResponseUtil.error(405, "参数类型错误");
+        if (projectCreateDocumentDTO.getId() == null) {
+            if (projectCreateDocumentDTO.getDocumentType() == null || projectCreateDocumentDTO.getDocumentType() != IProjectConstant.DOCUMENT_TYPE_HTTP
+                    && projectCreateDocumentDTO.getDocumentType() != IProjectConstant.DOCUMENT_TYPE_MARKDOWN) {
+                return ResponseUtil.error(405, "参数类型错误");
+            }
         }
+
 
         DocumentInfo documentInfo = new DocumentInfo();
         BeanUtil.copyProperties(projectCreateDocumentDTO, documentInfo);
-
+        if (projectCreateDocumentDTO.getDocumentContent() != null) {
+            documentInfo.setDocumentContent(projectCreateDocumentDTO.getDocumentContent().toString());
+        }
         if (documentInfoService.saveOrUpdate(documentInfo)) {
             return ResponseUtil.success("保存成功");
         }
@@ -415,13 +418,86 @@ public class ProjectController extends BaseController {
         return ResponseUtil.success(documentCatalogService.listLeftDocumentCatalogInfo(projectId));
     }
 
-    @ApiOperation(value = "保存文档信息")
-    @RequestMapping(value = "/save/document/content", method = RequestMethod.POST)
-    public GlobalApiResponse<String> saveDocumentContent(HttpServletRequest request,
-                                                         @RequestBody JSONObject documentContent) {
-        String s = documentContent.toString();
-        System.out.println(s);
-        System.out.println(documentContent.getLong("documentId"));
-        return ResponseUtil.success(new JSONObject(s));
+    @ApiOperation(value = "删除项目目录或则文档信息（type：1 目录 2 文档）")
+    @RequestMapping(value = "/del/{id}/{type}", method = RequestMethod.GET)
+    public GlobalApiResponse<String> delProjectCatalogOrDocumentInfo(HttpServletRequest request,
+                                                                     @PathVariable Long id,
+                                                                     @PathVariable Integer type) {
+
+        Long userId = super.getUserId(request);
+
+        if (userId == null) {
+            return ResponseUtil.error(401, "用户身份已过期");
+        }
+
+        boolean flag;
+        switch (type) {
+            case IProjectConstant.OPERATION_TYPE_CATALOG:
+                flag = documentCatalogService.delCatalogInfoById(id);
+                break;
+            case IProjectConstant.OPERATION_TYPE_DOCUMENT:
+                flag = documentInfoService.delDocumentInfoById(id);
+                break;
+            default:
+                return ResponseUtil.error(405, "参数错误");
+        }
+
+        if (flag) {
+            return ResponseUtil.success("删除成功");
+        }
+
+        return ResponseUtil.error("删除失败");
+    }
+
+    @ApiOperation(value = "根据文档ID查询文档内容")
+    @RequestMapping(value = "/document/content/{id}", method = RequestMethod.GET)
+    public GlobalApiResponse<String> findDocumentContentById(HttpServletRequest request,
+                                                             @PathVariable Long id) {
+        Long userId = super.getUserId(request);
+
+        if (userId == null) {
+            return ResponseUtil.error(401, "用户身份已过期");
+        }
+        return ResponseUtil.success(documentInfoService.findDocumentContentById(id));
+    }
+
+    @ApiOperation(value = "更新目录或文档名称")
+    @RequestMapping(value = "/update/{id}/{type}", method = RequestMethod.GET)
+    public GlobalApiResponse<String> updateCatalogOrDocumentName(HttpServletRequest request,
+                                                                 @PathVariable Long id,
+                                                                 @PathVariable Integer type,
+                                                                 @RequestParam String name) {
+        Long userId = super.getUserId(request);
+
+        if (userId == null) {
+            return ResponseUtil.error(401, "用户身份已过期");
+        }
+
+        boolean flag;
+        switch (type) {
+            case IProjectConstant.OPERATION_TYPE_CATALOG:
+                DocumentCatalog documentCatalog = documentCatalogService.findDocumentCatalogInfo(id);
+                if (documentCatalog == null) {
+                    return ResponseUtil.error(405, "目录不存在");
+                }
+                documentCatalog.setCatalogName(name);
+                flag = documentCatalogService.updateById(documentCatalog);
+                break;
+            case IProjectConstant.OPERATION_TYPE_DOCUMENT:
+                DocumentInfo documentInfo = documentInfoService.findDocumentInfo(id);
+                if (documentInfo == null) {
+                    return ResponseUtil.error(405, "文档不存在");
+                }
+                documentInfo.setDocumentName(name);
+                flag = documentInfoService.updateById(documentInfo);
+                break;
+            default:
+                return ResponseUtil.error(405, "参数错误");
+        }
+        if (flag) {
+            return ResponseUtil.success("修改成功");
+        }
+
+        return ResponseUtil.error("修改失败");
     }
 }
